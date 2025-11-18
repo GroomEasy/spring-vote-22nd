@@ -31,7 +31,7 @@ public class SignUpRequestDTO {
     private Team team;
 
     @NotNull(message = "본인이 속한 파트를 선택해주세요.")
-    @Schema(description = "소속 팀", implementation = Part.class)
+    @Schema(description = "소속 파트", implementation = Part.class)
     private Part part;
 
     // 비밀번호 일치 검증 메서드

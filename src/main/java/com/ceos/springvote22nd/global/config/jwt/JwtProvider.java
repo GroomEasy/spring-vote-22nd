@@ -26,6 +26,7 @@ public class JwtProvider {
     @Value("${jwt.refresh-token-validity}")
     private long refreshTokenValidity;
 
+    @Getter
     private SecretKey key;
 
     public JwtProvider(@Value("${jwt.secret}") String secret) {
