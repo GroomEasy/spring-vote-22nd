@@ -1,0 +1,22 @@
+package com.ceos.springvote22nd.domain.user.exception;
+
+import com.ceos.springvote22nd.global.config.exception.ResultCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@Getter
+@RequiredArgsConstructor
+public enum UserErrorCode implements ResultCode {
+
+    // User 관련 에러
+    INVALID_USERNAME(HttpStatus.NOT_FOUND, 1101, "아이디가 일치하지 않습니다."),
+    INVALID_PASSWORD(HttpStatus.CONFLICT, 1102, "비밀번호가 일치하지 않습니다."),
+    INVALID_EMAIL(HttpStatus.CONFLICT, 1103, "이메일이 일치하지 않습니다."),
+    DUPLICATE_USERNAME(HttpStatus.CONFLICT, 1104, "이미 사용 중인 아이디입니다."),
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, 1105, "이미 사용 중인 이메일입니다.");
+
+    private final HttpStatus status;
+    private final int code;
+    private final String message;
+}
