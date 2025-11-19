@@ -15,9 +15,6 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-
     @Getter
     @Value("${jwt.access-token-validity}")
     private long accessTokenValidity;
@@ -26,7 +23,6 @@ public class JwtProvider {
     @Value("${jwt.refresh-token-validity}")
     private long refreshTokenValidity;
 
-    @Getter
     private final SecretKey key;
 
     public JwtProvider(@Value("${jwt.secret}") String secret) {
@@ -68,6 +64,10 @@ public class JwtProvider {
                 .expiration(validity)
                 .signWith(key)
                 .compact();
+    }
+
+    SecretKey getKey() {
+        return this.key;
     }
 
 }
