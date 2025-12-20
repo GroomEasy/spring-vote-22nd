@@ -2,16 +2,16 @@ package com.ceos.springvote22nd.domain.vote.controller;
 
 import com.ceos.springvote22nd.domain.common.dto.response.CommonResponse;
 import com.ceos.springvote22nd.domain.vote.dto.request.TeamVoteRequestDTO;
+import com.ceos.springvote22nd.domain.vote.dto.response.TeamVoteResponseDTO;
 import com.ceos.springvote22nd.domain.vote.service.TeamVoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/votes/team")
@@ -29,5 +29,13 @@ public class TeamVoteController {
     ) {
         teamVoteService.voteTeam(userId, request);
         return ResponseEntity.ok(CommonResponse.success(null));
+    }
+
+    // 팀 투표 순위 조회
+    @Operation(summary = "팀 투표 순위 조회", description = "모든 팀의 득표수를 내림차순으로 조회합니다.")
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<TeamVoteResponseDTO>>> getTeamVotes() {
+        List<TeamVoteResponseDTO> result = teamVoteService.getTeamVoteCounts();
+        return ResponseEntity.ok(CommonResponse.success(result));
     }
 }

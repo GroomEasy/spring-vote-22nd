@@ -3,14 +3,21 @@ package com.ceos.springvote22nd.domain.vote.service;
 import com.ceos.springvote22nd.domain.user.exception.UserErrorCode;
 import com.ceos.springvote22nd.domain.user.repository.UserRepository;
 import com.ceos.springvote22nd.domain.vote.dto.request.TeamVoteRequestDTO;
+import com.ceos.springvote22nd.domain.vote.dto.response.TeamVoteResponseDTO;
 import com.ceos.springvote22nd.domain.vote.exception.VoteErrorCode;
 import com.ceos.springvote22nd.domain.vote.repository.TeamVoteRepository;
 import com.ceos.springvote22nd.entity.TeamVote;
 import com.ceos.springvote22nd.entity.User;
+import com.ceos.springvote22nd.entity.enums.Team;
 import com.ceos.springvote22nd.global.config.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +50,28 @@ public class TeamVoteService {
                 .build();
 
         teamVoteRepository.save(vote);
+    }
+
+    // TODO: 리팩토링 필요
+    public List<TeamVoteResponseDTO> getTeamVoteCounts() {
+        // DB에서 투표가 있는 팀들의 집계 데이터를 가져옴
+        List<TeamVoteResponseDTO> voteCounts = teamVoteRepository.findVoteCounts();
+
+        // Team Enum에 있는 모든 팀을 순회하며 초기화
+        Map<String, Long> voteCountMap = new HashMap<>();
+        for (Team team : Team.values()) {
+            voteCountMap.put(team.toString(), 0L);
+        }
+
+        // DB에서 가져온 값을 덮어씀
+        for (TeamVoteResponseDTO dto : voteCounts) {
+            voteCountMap.put(dto.getTeamName(), dto.getVoteCount());
+        }
+
+        // Map을 다시 List로 변환하고, 득표수 내림차순 정렬
+        return voteCountMap.entrySet().stream()
+                .map(entry -> new TeamVoteResponseDTO(Team.valueOf(entry.getKey()), entry.getValue()))
+                .sorted((a, b) -> Long.compare(b.getVoteCount(), a.getVoteCount())) // 득표수 많은 순
+                .collect(Collectors.toList());
     }
 }
