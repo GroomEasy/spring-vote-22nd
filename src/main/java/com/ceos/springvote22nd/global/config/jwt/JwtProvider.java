@@ -19,10 +19,6 @@ public class JwtProvider {
     @Value("${jwt.access-token-validity}")
     private long accessTokenValidity;
 
-    @Getter
-    @Value("${jwt.refresh-token-validity}")
-    private long refreshTokenValidity;
-
     private final SecretKey key;
 
     public JwtProvider(@Value("${jwt.secret}") String secret) {
@@ -46,20 +42,6 @@ public class JwtProvider {
                 .subject(userId.toString())
                 .claim("email", email)
                 .claim("type", "access")
-                .issuedAt(now)
-                .expiration(validity)
-                .signWith(key)
-                .compact();
-    }
-
-    // Refresh Token 생성
-    public String createRefreshToken(Long userId) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + refreshTokenValidity);
-
-        return Jwts.builder()
-                .subject(userId.toString())
-                .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(key)

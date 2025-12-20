@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "인증 API", description = "로그인/토큰재발급/로그아웃")
+@Tag(name = "인증 API", description = "로그인/로그아웃")
 public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "로그인", description = "이메일/비밀번호로 로그인하고 access/refresh 토큰을 쿠키로 발급한다.")
+    @Operation(summary = "로그인", description = "이메일/비밀번호로 로그인하고 access 토큰을 쿠키로 발급한다.")
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<LoginResponseDTO>> login(
             @Valid @RequestBody LoginRequestDTO request,
@@ -31,17 +31,8 @@ public class AuthController {
         return ResponseEntity.ok(CommonResponse.success(result));
     }
 
-    @Operation(summary = "Access 토큰 재발급", description = "refreshToken 쿠키를 검증해 accessToken(및 refreshToken)을 재발급한다.")
-    @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<Void>> refresh(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
-        authService.refresh(request, response);
-        return ResponseEntity.ok(CommonResponse.success(null));
-    }
 
-    @Operation(summary = "로그아웃", description = "access/refresh 토큰 쿠키를 삭제한다.")
+    @Operation(summary = "로그아웃", description = "access 토큰 쿠키를 삭제한다.")
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<Void>> logout(HttpServletResponse response) {
         authService.logout(response);
