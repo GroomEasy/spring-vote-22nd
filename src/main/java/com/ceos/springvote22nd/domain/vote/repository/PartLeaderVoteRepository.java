@@ -2,11 +2,11 @@ package com.ceos.springvote22nd.domain.vote.repository;
 
 import com.ceos.springvote22nd.domain.vote.dto.response.CandidateResponseDTO;
 import com.ceos.springvote22nd.entity.PartLeaderVote;
+import com.ceos.springvote22nd.entity.User;
 import com.ceos.springvote22nd.entity.enums.Part;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 

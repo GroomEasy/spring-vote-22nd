@@ -20,11 +20,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 파트별 후보자, 득표수 한번에 내림차순으로 조회
     @Query("SELECT new com.ceos.springvote22nd.domain.vote.dto.response.CandidateResponseDTO(" +
-            "u.id, u.username, u.team, COUNT(v)) " +
+            "u.id, " +
+            "u.part, " +
+            "u.username, " +
+            "u.team, " +
+            "COUNT(v)) " +
             "FROM User u " +
             "LEFT JOIN PartLeaderVote v ON v.candidate = u " +
             "WHERE u.part = :part " +
-            "GROUP BY u.id, u.username, u.team " +
+            "GROUP BY u.id, u.part, u.username, u.team " +
             "ORDER BY COUNT(v) DESC")
     List<CandidateResponseDTO> findAllCandidatesWithVoteCount(@Param("part") Part part);
 }
