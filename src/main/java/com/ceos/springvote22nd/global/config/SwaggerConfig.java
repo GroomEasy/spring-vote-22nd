@@ -19,7 +19,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .servers(List.of(
                         new Server()
-                                .url("http://ec2-18-191-255-71.us-east-2.compute.amazonaws.com")
+                                .url("http://ec2-52-79-241-109.ap-northeast-2.compute.amazonaws.com")
                                 .description("Production Server"),
                         new Server()
                                 .url("http://localhost:8080")
