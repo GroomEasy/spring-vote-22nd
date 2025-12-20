@@ -35,7 +35,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ceos-vote-spring:latest
+          tags: danaggero/ceos-vote-spring:latest
 
   deploy:
     needs: build-and-push
@@ -53,8 +53,8 @@ jobs:
             cd /home/ubuntu/spring-vote-22nd
 
             git fetch origin
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+            git clean -fd
 
             # 최신 이미지 받아서 컨테이너 재시작
             sudo docker compose pull
