@@ -6,8 +6,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CookieUtil {
@@ -27,37 +29,12 @@ public class CookieUtil {
         response.addCookie(cookie);
     }
 
-    public void addRefreshTokenCookie(HttpServletResponse response, String token) {
-        Cookie cookie = createCookie(
-                REFRESH_TOKEN_NAME,
-                token,
-                (int) (jwtProvider.getRefreshTokenValidity() / 1000),
-                "/api/auth/refresh"
-        );
-        response.addCookie(cookie);
-    }
-
     public void deleteAccessTokenCookie(HttpServletResponse response) {
         Cookie cookie = createCookie(ACCESS_TOKEN_NAME, null, 0, "/");
         response.addCookie(cookie);
     }
 
-    public void deleteRefreshTokenCookie(HttpServletResponse response) {
-        Cookie cookie = createCookie(REFRESH_TOKEN_NAME, null, 0, "/api/auth/refresh");
-        response.addCookie(cookie);
-    }
 
-    public String getRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (REFRESH_TOKEN_NAME.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        throw new GlobalException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND);
-    }
 
     private Cookie createCookie(String name, String value, int maxAge, String path) {
         Cookie cookie = new Cookie(name, value);

@@ -38,10 +38,8 @@ public class AuthService {
         }
 
         String accessToken = jwtProvider.createAccessToken(user.getId(), user.getEmail());
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
 
         cookieUtil.addAccessTokenCookie(response, accessToken);
-        cookieUtil.addRefreshTokenCookie(response, refreshToken);
 
         return LoginResponseDTO.builder()
                 .userId(user.getId())
@@ -53,34 +51,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void refresh(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = cookieUtil.getRefreshTokenFromCookie(request); // 없으면 REFRESH_TOKEN_NOT_FOUND
-
-        if (!jwtValidator.validateToken(refreshToken)) {
-            throw new GlobalException(AuthErrorCode.INVALID_REFRESH_TOKEN);
-        }
-
-        String tokenType = jwtValidator.getTokenType(refreshToken);
-        if (!"refresh".equals(tokenType)) {
-            throw new GlobalException(AuthErrorCode.INVALID_TOKEN_TYPE);
-        }
-
-        Long userId = jwtValidator.getUserIdFromToken(refreshToken);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GlobalException(AuthErrorCode.USER_NOT_FOUND));
-
-        // rotation
-        String newAccessToken = jwtProvider.createAccessToken(user.getId(), user.getEmail());
-        String newRefreshToken = jwtProvider.createRefreshToken(user.getId());
-
-        cookieUtil.addAccessTokenCookie(response, newAccessToken);
-        cookieUtil.addRefreshTokenCookie(response, newRefreshToken);
-    }
-
-    @Transactional
     public void logout(HttpServletResponse response) {
         cookieUtil.deleteAccessTokenCookie(response);
-        cookieUtil.deleteRefreshTokenCookie(response);
     }
 }
